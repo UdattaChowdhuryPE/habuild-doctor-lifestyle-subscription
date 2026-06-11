@@ -165,14 +165,14 @@ export function PrescriptionForm() {
   }, [patientName, selectedHabitLabels]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[linear-gradient(180deg,var(--color-sage-light),var(--color-background))]">
       <Toaster position="top-center" richColors />
 
       {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm">
+      <header className="border-b border-border bg-card/60 backdrop-blur-sm">
         <div className="mx-auto max-w-lg px-4 py-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-habuild">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[image:var(--gradient-habuild)] shadow-sm">
               <Leaf className="h-5 w-5 text-primary-foreground" />
             </div>
             <div>
@@ -227,7 +227,10 @@ export function PrescriptionForm() {
               <Heart className="h-4 w-4 text-habuild" />
               Recommended Habits
             </label>
-            <div className="flex flex-wrap gap-2">
+            <p className="text-xs text-muted-foreground -mt-1">
+              Tap to add or remove habits from the prescription.
+            </p>
+            <div className="grid gap-2 sm:grid-cols-2">
               {DEFAULT_HABITS.map((habit) => {
                 const isSelected = selectedHabits.has(habit.id);
                 const Icon = habit.icon;
@@ -235,14 +238,15 @@ export function PrescriptionForm() {
                   <button
                     key={habit.id}
                     type="button"
+                    aria-pressed={isSelected}
                     onClick={() => toggleHabit(habit.id)}
-                    className={`habit-chip inline-flex items-center gap-1.5 ${
-                      isSelected ? "habit-chip-active" : ""
-                    }`}
+                    className={`habit-row ${isSelected ? "habit-row-active" : ""}`}
                   >
-                    {isSelected && <Check className="h-3.5 w-3.5" />}
-                    <Icon className="h-3.5 w-3.5" />
-                    {habit.label}
+                    <span className={`habit-check ${isSelected ? "habit-check-active" : ""}`}>
+                      <Check className="h-3.5 w-3.5" strokeWidth={3} />
+                    </span>
+                    <Icon className="h-4 w-4 text-habuild shrink-0" />
+                    <span className="leading-tight">{habit.label}</span>
                   </button>
                 );
               })}

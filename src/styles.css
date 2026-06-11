@@ -37,6 +37,7 @@
   --color-habuild: var(--habuild);
   --color-habuild-light: var(--habuild-light);
   --color-habuild-dark: var(--habuild-dark);
+  --color-habuild-green: var(--habuild-green);
   --color-amber: var(--amber);
   --color-amber-light: var(--amber-light);
   --color-sage: var(--sage);
@@ -51,37 +52,39 @@
 :root {
   --radius: 0.75rem;
 
-  /* Habuild Brand Palette */
-  --habuild: oklch(0.45 0.12 155);
-  --habuild-light: oklch(0.62 0.14 155);
-  --habuild-dark: oklch(0.32 0.10 155);
-  --amber: oklch(0.65 0.16 65);
-  --amber-light: oklch(0.78 0.12 65);
-  --sage: oklch(0.70 0.08 155);
-  --sage-light: oklch(0.88 0.06 155);
-  --cream: oklch(0.97 0.02 85);
-  --forest: oklch(0.30 0.09 155);
+  /* Habuild Brand Palette — light, airy mint with teal→green gradient */
+  --habuild: oklch(0.68 0.13 175);          /* brand teal */
+  --habuild-light: oklch(0.78 0.13 165);
+  --habuild-dark: oklch(0.58 0.13 178);
+  --habuild-green: oklch(0.72 0.15 150);    /* brand green */
+  --gradient-habuild: linear-gradient(100deg, oklch(0.68 0.13 178), oklch(0.74 0.16 150));
+  --amber: oklch(0.76 0.15 70);             /* brand orange accent */
+  --amber-light: oklch(0.85 0.12 75);
+  --sage: oklch(0.82 0.07 175);
+  --sage-light: oklch(0.94 0.03 175);
+  --cream: oklch(0.98 0.01 175);
+  --forest: oklch(0.30 0.04 250);           /* navy headings */
 
   /* Shadcn semantic tokens mapped to Habuild */
-  --background: oklch(0.98 0.01 85);
-  --foreground: oklch(0.20 0.03 260);
+  --background: oklch(0.98 0.015 175);
+  --foreground: oklch(0.27 0.04 255);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.20 0.03 260);
+  --card-foreground: oklch(0.27 0.04 255);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.20 0.03 260);
-  --primary: oklch(0.45 0.12 155);
-  --primary-foreground: oklch(0.98 0.01 85);
-  --secondary: oklch(0.92 0.04 155);
-  --secondary-foreground: oklch(0.30 0.08 155);
-  --muted: oklch(0.94 0.02 155);
-  --muted-foreground: oklch(0.50 0.04 260);
-  --accent: oklch(0.88 0.06 155);
-  --accent-foreground: oklch(0.30 0.08 155);
+  --popover-foreground: oklch(0.27 0.04 255);
+  --primary: oklch(0.68 0.13 175);
+  --primary-foreground: oklch(0.99 0.01 175);
+  --secondary: oklch(0.94 0.04 175);
+  --secondary-foreground: oklch(0.40 0.08 178);
+  --muted: oklch(0.95 0.02 175);
+  --muted-foreground: oklch(0.52 0.03 250);
+  --accent: oklch(0.92 0.05 175);
+  --accent-foreground: oklch(0.40 0.08 178);
   --destructive: oklch(0.58 0.22 25);
-  --destructive-foreground: oklch(0.98 0.01 85);
-  --border: oklch(0.90 0.02 155);
-  --input: oklch(0.90 0.02 155);
-  --ring: oklch(0.45 0.12 155);
+  --destructive-foreground: oklch(0.99 0.01 175);
+  --border: oklch(0.92 0.02 175);
+  --input: oklch(0.90 0.02 175);
+  --ring: oklch(0.68 0.13 175);
 
   --chart-1: oklch(0.45 0.12 155);
   --chart-2: oklch(0.65 0.16 65);
@@ -151,18 +154,18 @@
 }
 
 @utility btn-habuild {
-  background: var(--color-habuild);
+  background: var(--gradient-habuild);
   color: var(--color-primary-foreground);
-  border-radius: var(--radius-lg);
+  border-radius: 9999px;
   font-weight: 600;
-  padding: 0.75rem 1.5rem;
+  padding: 0.85rem 1.5rem;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 14px oklch(from var(--color-habuild) l c h / 25%);
+  box-shadow: 0 6px 18px oklch(from var(--color-habuild) l c h / 30%);
 
   &:hover {
-    background: var(--color-habuild-dark);
+    filter: brightness(1.05);
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px oklch(from var(--color-habuild) l c h / 30%);
+    box-shadow: 0 10px 26px oklch(from var(--color-habuild) l c h / 38%);
   }
 }
 
@@ -173,25 +176,53 @@
   border: 1px solid var(--color-border);
 }
 
-@utility habit-chip {
-  background: var(--color-sage-light);
-  color: var(--color-forest);
-  border-radius: var(--radius-md);
+/* Habit selection as a clear, full-width toggle row */
+@utility habit-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  text-align: left;
+  background: var(--color-card);
+  color: var(--color-foreground);
+  border-radius: var(--radius-lg);
   font-weight: 500;
-  font-size: 0.875rem;
-  padding: 0.5rem 0.875rem;
-  border: 1px solid oklch(from var(--color-sage) l c h / 30%);
+  font-size: 0.9rem;
+  padding: 0.75rem 0.875rem;
+  border: 1.5px solid var(--color-border);
   transition: all 0.15s ease;
   cursor: pointer;
 
   &:hover {
-    background: var(--color-sage);
-    color: var(--color-primary-foreground);
+    border-color: var(--color-habuild-light);
+    background: var(--color-sage-light);
   }
 }
 
-@utility habit-chip-active {
-  background: var(--color-habuild);
-  color: var(--color-primary-foreground);
-  border-color: var(--color-habuild-dark);
+@utility habit-row-active {
+  background: var(--color-sage-light);
+  border-color: var(--color-habuild);
+  color: var(--color-forest);
 }
+
+/* The leading checkbox indicator */
+@utility habit-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: 1.35rem;
+  width: 1.35rem;
+  border-radius: 0.5rem;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-background);
+  color: transparent;
+  transition: all 0.15s ease;
+}
+
+@utility habit-check-active {
+  background: var(--gradient-habuild);
+  border-color: transparent;
+  color: var(--color-primary-foreground);
+}
+
