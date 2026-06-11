@@ -73,7 +73,7 @@ export function PrescriptionForm() {
   );
   const [inviteLink, setInviteLink] = useState("");
   const [isSending, setIsSending] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
+  const [showPreview, setShowPreview] = useState(true);
   const [showTracking, setShowTracking] = useState(false);
 
   const saveFn = useServerFn(savePrescription);
