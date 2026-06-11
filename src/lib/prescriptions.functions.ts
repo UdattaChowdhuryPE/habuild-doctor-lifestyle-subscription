@@ -21,6 +21,7 @@ export const savePrescription = createServerFn({ method: "POST" })
         patient_mobile: data.patientMobile,
         habits: data.habits,
         doctor_name: data.doctorName,
+        invite_link: data.inviteLink,
         status: "sent",
       })
       .select()
