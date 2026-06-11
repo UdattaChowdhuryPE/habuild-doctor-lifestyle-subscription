@@ -160,15 +160,18 @@ export function PrescriptionForm() {
   }, [patientName, patientMobile, selectedHabits, selectedHabitLabels, waUrl, saveFn, countFn]);
 
   const previewMessage = useMemo(() => {
+    const habitList = selectedHabitLabels.map((h) => `✅ ${h}`).join("\n");
+    const inviteSection = inviteLink.trim()
+      ? `\nTo help you get started, I would also like to invite you to a 14-Day Free Yoga Program, where Saurabh Bothra (IITian with 14+ years of experience) will guide you through simple daily sessions:\n${inviteLink.trim()}`
+      : "";
     return (
       `Namaste ${patientName || "Patient"} Ji 🙏\n\n` +
       `As discussed during your consultation, Dr. Udatta Chowdhury recommends the following daily wellness practices:\n\n` +
-      `${selectedHabitLabels.map((h) => `✅ ${h}`).join("\n")}\n\n` +
-      `Start with one small step today.\n\n` +
-      `Wishing you good health 🌿\n\n` +
-      `Team Habuild`
+      `${habitList}\n\n` +
+      `Start with one small step today.${inviteSection}\n\n` +
+      `Wishing you good health 🌿`
     );
-  }, [patientName, selectedHabitLabels]);
+  }, [patientName, selectedHabitLabels, inviteLink]);
 
   return (
     <div className="min-h-screen bg-[linear-gradient(180deg,var(--color-sage-light),var(--color-background))]">
