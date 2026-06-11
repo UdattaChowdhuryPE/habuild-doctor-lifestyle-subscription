@@ -158,12 +158,12 @@
   padding: 0.75rem 1.5rem;
   transition: all 0.2s ease;
   box-shadow: 0 4px 14px oklch(from var(--color-habuild) l c h / 25%);
-}
 
-@utility btn-habuild:hover {
-  background: var(--color-habuild-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px oklch(from var(--color-habuild) l c h / 30%);
+  &:hover {
+    background: var(--color-habuild-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px oklch(from var(--color-habuild) l c h / 30%);
+  }
 }
 
 @utility card-elevated {
@@ -183,11 +183,11 @@
   border: 1px solid oklch(from var(--color-sage) l c h / 30%);
   transition: all 0.15s ease;
   cursor: pointer;
-}
 
-@utility habit-chip:hover {
-  background: var(--color-sage);
-  color: var(--color-primary-foreground);
+  &:hover {
+    background: var(--color-sage);
+    color: var(--color-primary-foreground);
+  }
 }
 
 @utility habit-chip-active {
