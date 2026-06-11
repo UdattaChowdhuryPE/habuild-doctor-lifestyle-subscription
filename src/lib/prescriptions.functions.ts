@@ -6,6 +6,7 @@ const saveSchema = z.object({
   patientMobile: z.string().min(10).max(15),
   habits: z.array(z.string()).min(1).max(10),
   doctorName: z.string().min(1).max(100).optional().default("Dr. Udatta Chowdhury"),
+  inviteLink: z.string().max(500).optional().default(""),
 });
 
 export const savePrescription = createServerFn({ method: "POST" })
