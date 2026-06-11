@@ -227,7 +227,10 @@ export function PrescriptionForm() {
               <Heart className="h-4 w-4 text-habuild" />
               Recommended Habits
             </label>
-            <div className="flex flex-wrap gap-2">
+            <p className="text-xs text-muted-foreground -mt-1">
+              Tap to add or remove habits from the prescription.
+            </p>
+            <div className="grid gap-2 sm:grid-cols-2">
               {DEFAULT_HABITS.map((habit) => {
                 const isSelected = selectedHabits.has(habit.id);
                 const Icon = habit.icon;
@@ -235,14 +238,15 @@ export function PrescriptionForm() {
                   <button
                     key={habit.id}
                     type="button"
+                    aria-pressed={isSelected}
                     onClick={() => toggleHabit(habit.id)}
-                    className={`habit-chip inline-flex items-center gap-1.5 ${
-                      isSelected ? "habit-chip-active" : ""
-                    }`}
+                    className={`habit-row ${isSelected ? "habit-row-active" : ""}`}
                   >
-                    {isSelected && <Check className="h-3.5 w-3.5" />}
-                    <Icon className="h-3.5 w-3.5" />
-                    {habit.label}
+                    <span className={`habit-check ${isSelected ? "habit-check-active" : ""}`}>
+                      <Check className="h-3.5 w-3.5" strokeWidth={3} />
+                    </span>
+                    <Icon className="h-4 w-4 text-habuild shrink-0" />
+                    <span className="leading-tight">{habit.label}</span>
                   </button>
                 );
               })}
