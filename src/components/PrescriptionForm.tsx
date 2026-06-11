@@ -103,9 +103,9 @@ export function PrescriptionForm() {
   const waUrl = useMemo(() => {
     const cleaned = cleanMobileNumber(patientMobile);
     if (!cleaned || cleaned.length < 10) return null;
-    const message = generateWhatsAppMessage(patientName, selectedHabitLabels, "Dr. Udatta Chowdhury");
+    const message = generateWhatsAppMessage(patientName, selectedHabitLabels, "Dr. Udatta Chowdhury", inviteLink);
     return `https://wa.me/${cleaned}?text=${message}`;
-  }, [patientName, patientMobile, selectedHabitLabels]);
+  }, [patientName, patientMobile, selectedHabitLabels, inviteLink]);
 
   const handleSend = useCallback(async () => {
     if (!patientName.trim()) {
