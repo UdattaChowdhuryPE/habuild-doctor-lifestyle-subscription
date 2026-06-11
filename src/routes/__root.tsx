@@ -88,6 +88,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Habuild" },
+      { name: "twitter:title", content: "Lifestyle Prescription | Habuild" },
+      { name: "twitter:description", content: "Send personalized lifestyle prescriptions to your patients on WhatsApp in under 15 seconds." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/31495f07-2578-41b6-8ab5-3c0c818bea0a/id-preview-74abed3e--7169bdcc-8db5-4198-a562-8231efa7f145.lovable.app-1781167252978.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/31495f07-2578-41b6-8ab5-3c0c818bea0a/id-preview-74abed3e--7169bdcc-8db5-4198-a562-8231efa7f145.lovable.app-1781167252978.png" },
     ],
     links: [
       {
