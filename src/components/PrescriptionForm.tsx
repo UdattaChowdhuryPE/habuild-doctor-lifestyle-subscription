@@ -34,7 +34,7 @@ const DEFAULT_HABITS = [
   { id: "screen", label: "Avoid screen before bed", icon: Smartphone },
 ];
 
-const PRE_SELECTED = ["yoga", "walking", "breathing", "sleep"];
+const PRE_SELECTED: string[] = [];
 
 function generateWhatsAppMessage(
   patientName: string,
