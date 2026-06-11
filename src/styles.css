@@ -37,6 +37,7 @@
   --color-habuild: var(--habuild);
   --color-habuild-light: var(--habuild-light);
   --color-habuild-dark: var(--habuild-dark);
+  --color-habuild-green: var(--habuild-green);
   --color-amber: var(--amber);
   --color-amber-light: var(--amber-light);
   --color-sage: var(--sage);
