@@ -134,6 +134,7 @@ export function PrescriptionForm() {
           patientMobile: cleaned,
           habits: selectedHabitLabels,
           doctorName: "Dr. Udatta Chowdhury",
+          inviteLink: inviteLink.trim(),
         },
       });
 
