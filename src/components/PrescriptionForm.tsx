@@ -20,6 +20,7 @@ import {
   ChevronUp,
   TrendingUp,
   MessageCircle,
+  ExternalLink,
 } from "lucide-react";
 import { Toaster, toast } from "sonner";
 
@@ -34,21 +35,24 @@ const DEFAULT_HABITS = [
   { id: "screen", label: "Avoid screen before bed", icon: Smartphone },
 ];
 
-const PRE_SELECTED = ["yoga", "walking", "breathing", "sleep"];
+const PRE_SELECTED: string[] = [];
 
 function generateWhatsAppMessage(
   patientName: string,
   habits: string[],
-  doctorName: string
+  doctorName: string,
+  inviteLink: string
 ) {
   const habitList = habits.map((h) => `✅ ${h}`).join("\n");
+  const inviteSection = inviteLink.trim()
+    ? `\nTo help you get started, I would also like to invite you to a 14-Day Free Yoga Program, where Saurabh Bothra (IITian with 14+ years of experience) will guide you through simple daily sessions:\n${inviteLink.trim()}`
+    : "";
   return encodeURIComponent(
     `Namaste ${patientName} Ji 🙏\n\n` +
       `As discussed during your consultation, ${doctorName} recommends the following daily wellness practices:\n\n` +
       `${habitList}\n\n` +
-      `Start with one small step today.\n\n` +
-      `Wishing you good health 🌿\n\n` +
-      `Team Habuild`
+      `Start with one small step today.${inviteSection}\n\n` +
+      `Wishing you good health 🌿`
   );
 }
 
@@ -67,6 +71,7 @@ export function PrescriptionForm() {
   const [selectedHabits, setSelectedHabits] = useState<Set<string>>(
     new Set(PRE_SELECTED)
   );
+  const [inviteLink, setInviteLink] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [showTracking, setShowTracking] = useState(false);
@@ -98,9 +103,9 @@ export function PrescriptionForm() {
   const waUrl = useMemo(() => {
     const cleaned = cleanMobileNumber(patientMobile);
     if (!cleaned || cleaned.length < 10) return null;
-    const message = generateWhatsAppMessage(patientName, selectedHabitLabels, "Dr. Udatta Chowdhury");
+    const message = generateWhatsAppMessage(patientName, selectedHabitLabels, "Dr. Udatta Chowdhury", inviteLink);
     return `https://wa.me/${cleaned}?text=${message}`;
-  }, [patientName, patientMobile, selectedHabitLabels]);
+  }, [patientName, patientMobile, selectedHabitLabels, inviteLink]);
 
   const handleSend = useCallback(async () => {
     if (!patientName.trim()) {
@@ -129,6 +134,7 @@ export function PrescriptionForm() {
           patientMobile: cleaned,
           habits: selectedHabitLabels,
           doctorName: "Dr. Udatta Chowdhury",
+          inviteLink: inviteLink.trim(),
         },
       });
 
@@ -145,24 +151,28 @@ export function PrescriptionForm() {
       setPatientName("");
       setPatientMobile("");
       setSelectedHabits(new Set(PRE_SELECTED));
+      setInviteLink("");
     } catch (err) {
       toast.error("Something went wrong. Please try again.");
       console.error(err);
     } finally {
       setIsSending(false);
     }
-  }, [patientName, patientMobile, selectedHabits, selectedHabitLabels, waUrl, saveFn, countFn]);
+  }, [patientName, patientMobile, selectedHabits, selectedHabitLabels, waUrl, saveFn, countFn, inviteLink]);
 
   const previewMessage = useMemo(() => {
+    const habitList = selectedHabitLabels.map((h) => `✅ ${h}`).join("\n");
+    const inviteSection = inviteLink.trim()
+      ? `\nTo help you get started, I would also like to invite you to a 14-Day Free Yoga Program, where Saurabh Bothra (IITian with 14+ years of experience) will guide you through simple daily sessions:\n${inviteLink.trim()}`
+      : "";
     return (
       `Namaste ${patientName || "Patient"} Ji 🙏\n\n` +
       `As discussed during your consultation, Dr. Udatta Chowdhury recommends the following daily wellness practices:\n\n` +
-      `${selectedHabitLabels.map((h) => `✅ ${h}`).join("\n")}\n\n` +
-      `Start with one small step today.\n\n` +
-      `Wishing you good health 🌿\n\n` +
-      `Team Habuild`
+      `${habitList}\n\n` +
+      `Start with one small step today.${inviteSection}\n\n` +
+      `Wishing you good health 🌿`
     );
-  }, [patientName, selectedHabitLabels]);
+  }, [patientName, selectedHabitLabels, inviteLink]);
 
   return (
     <div className="min-h-screen bg-[linear-gradient(180deg,var(--color-sage-light),var(--color-background))]">
@@ -218,6 +228,24 @@ export function PrescriptionForm() {
             />
             <p className="text-xs text-muted-foreground">
               Enter 10-digit Indian mobile number
+            </p>
+          </div>
+
+          {/* Invite Link */}
+          <div className="space-y-1.5">
+            <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+              <ExternalLink className="h-4 w-4 text-habuild" />
+              14-Day Yoga Program Link
+            </label>
+            <input
+              type="url"
+              value={inviteLink}
+              onChange={(e) => setInviteLink(e.target.value)}
+              placeholder="e.g. https://habuild.in/yoga-program"
+              className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground outline-none ring-ring transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background placeholder:text-muted-foreground/60"
+            />
+            <p className="text-xs text-muted-foreground">
+              Your personal invite link for the free yoga program
             </p>
           </div>
 
