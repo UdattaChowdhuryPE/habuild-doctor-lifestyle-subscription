@@ -20,6 +20,7 @@ export type Database = {
           doctor_name: string
           habits: string[]
           id: string
+          invite_link: string | null
           patient_mobile: string
           patient_name: string
           status: string
@@ -30,6 +31,7 @@ export type Database = {
           doctor_name?: string
           habits?: string[]
           id?: string
+          invite_link?: string | null
           patient_mobile: string
           patient_name: string
           status?: string
@@ -40,6 +42,7 @@ export type Database = {
           doctor_name?: string
           habits?: string[]
           id?: string
+          invite_link?: string | null
           patient_mobile?: string
           patient_name?: string
           status?: string
