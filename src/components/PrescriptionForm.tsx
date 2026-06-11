@@ -15,7 +15,6 @@ import {
   Droplets,
   Apple,
   Smartphone,
-  X,
   Loader2,
   ChevronDown,
   ChevronUp,
