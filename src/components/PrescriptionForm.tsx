@@ -157,7 +157,7 @@ export function PrescriptionForm() {
     } finally {
       setIsSending(false);
     }
-  }, [patientName, patientMobile, selectedHabits, selectedHabitLabels, waUrl, saveFn, countFn]);
+  }, [patientName, patientMobile, selectedHabits, selectedHabitLabels, waUrl, saveFn, countFn, inviteLink]);
 
   const previewMessage = useMemo(() => {
     const habitList = selectedHabitLabels.map((h) => `✅ ${h}`).join("\n");
