@@ -71,6 +71,7 @@ export function PrescriptionForm() {
   const [selectedHabits, setSelectedHabits] = useState<Set<string>>(
     new Set(PRE_SELECTED)
   );
+  const [inviteLink, setInviteLink] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [showTracking, setShowTracking] = useState(false);
