@@ -150,6 +150,7 @@ export function PrescriptionForm() {
       setPatientName("");
       setPatientMobile("");
       setSelectedHabits(new Set(PRE_SELECTED));
+      setInviteLink("");
     } catch (err) {
       toast.error("Something went wrong. Please try again.");
       console.error(err);
