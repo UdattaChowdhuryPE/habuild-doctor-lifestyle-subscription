@@ -20,6 +20,7 @@ import {
   ChevronUp,
   TrendingUp,
   MessageCircle,
+  ExternalLink,
 } from "lucide-react";
 import { Toaster, toast } from "sonner";
 
