@@ -165,14 +165,14 @@ export function PrescriptionForm() {
   }, [patientName, selectedHabitLabels]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[linear-gradient(180deg,var(--color-sage-light),var(--color-background))]">
       <Toaster position="top-center" richColors />
 
       {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm">
+      <header className="border-b border-border bg-card/60 backdrop-blur-sm">
         <div className="mx-auto max-w-lg px-4 py-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-habuild">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[image:var(--gradient-habuild)] shadow-sm">
               <Leaf className="h-5 w-5 text-primary-foreground" />
             </div>
             <div>
