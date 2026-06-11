@@ -230,6 +230,24 @@ export function PrescriptionForm() {
             </p>
           </div>
 
+          {/* Invite Link */}
+          <div className="space-y-1.5">
+            <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+              <ExternalLink className="h-4 w-4 text-habuild" />
+              14-Day Yoga Program Link
+            </label>
+            <input
+              type="url"
+              value={inviteLink}
+              onChange={(e) => setInviteLink(e.target.value)}
+              placeholder="e.g. https://habuild.in/yoga-program"
+              className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground outline-none ring-ring transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background placeholder:text-muted-foreground/60"
+            />
+            <p className="text-xs text-muted-foreground">
+              Your personal invite link for the free yoga program
+            </p>
+          </div>
+
           {/* Habits */}
           <div className="space-y-2">
             <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
