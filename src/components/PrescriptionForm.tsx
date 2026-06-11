@@ -73,7 +73,7 @@ export function PrescriptionForm() {
   );
   const [inviteLink, setInviteLink] = useState("");
   const [isSending, setIsSending] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
+  const [showPreview, setShowPreview] = useState(true);
   const [showTracking, setShowTracking] = useState(false);
 
   const saveFn = useServerFn(savePrescription);
@@ -164,7 +164,7 @@ export function PrescriptionForm() {
     const habitList = selectedHabitLabels.map((h) => `✅ ${h}`).join("\n");
     const inviteSection = inviteLink.trim()
       ? `\nTo help you get started, I would also like to invite you to a 14-Day Free Yoga Program, where Saurabh Bothra (IITian with 14+ years of experience) will guide you through simple daily sessions:\n${inviteLink.trim()}`
-      : "";
+      : `\nTo help you get started, I would also like to invite you to a 14-Day Free Yoga Program, where Saurabh Bothra (IITian with 14+ years of experience) will guide you through simple daily sessions:\n<doctors_personal_invite_link>`;
     return (
       `Namaste ${patientName || "Patient"} Ji 🙏\n\n` +
       `As discussed during your consultation, Dr. Udatta Chowdhury recommends the following daily wellness practices:\n\n` +
