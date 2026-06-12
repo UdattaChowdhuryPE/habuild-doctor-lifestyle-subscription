@@ -45,11 +45,11 @@ function generateWhatsAppMessage(
 ) {
   const habitList = habits.map((h) => `✅ ${h}`).join("\n");
   const inviteSection = inviteLink.trim()
-    ? `\nTo help you get started, I would also like to invite you to a 14-Day Free Yoga Program, where Saurabh Bothra (IITian with 14+ years of experience) will guide you through simple daily sessions:\n${inviteLink.trim()}`
+    ? `\n\nTo help you get started, I would also like to invite you to a 14-Day Free Yoga Program, where Saurabh Bothra (IITian with 14+ years of experience) will guide you through simple daily sessions:\n\n${inviteLink.trim()}`
     : "";
   return encodeURIComponent(
     `Namaste ${patientName} Ji 🙏\n\n` +
-      `As discussed during your consultation, ${doctorName} recommends the following daily wellness practices:\n\n` +
+      `As discussed during your consultation, I recommend the following daily wellness practices:\n\n` +
       `${habitList}\n\n` +
       `Start with one small step today.${inviteSection}\n\n` +
       `Wishing you good health 🌿`
