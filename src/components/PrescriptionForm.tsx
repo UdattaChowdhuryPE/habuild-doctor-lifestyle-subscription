@@ -162,12 +162,12 @@ export function PrescriptionForm() {
 
   const previewMessage = useMemo(() => {
     const habitList = selectedHabitLabels.map((h) => `✅ ${h}`).join("\n");
-    const inviteSection = inviteLink.trim()
-      ? `\nTo help you get started, I would also like to invite you to a 14-Day Free Yoga Program, where Saurabh Bothra (IITian with 14+ years of experience) will guide you through simple daily sessions:\n${inviteLink.trim()}`
-      : `\nTo help you get started, I would also like to invite you to a 14-Day Free Yoga Program, where Saurabh Bothra (IITian with 14+ years of experience) will guide you through simple daily sessions:\n<doctors_personal_invite_link>`;
+    const linkPlaceholder = inviteLink.trim() || "<doctors_personal_invite_link>";
+    const inviteSection = `\n\nTo help you get started, I would also like to invite you to a 14-Day Free Yoga Program, where Saurabh Bothra (IITian with 14+ years of experience) will guide you through simple daily sessions:\n\n${linkPlaceholder}`;
+    
     return (
       `Namaste ${patientName || "Patient"} Ji 🙏\n\n` +
-      `As discussed during your consultation, Dr. Udatta Chowdhury recommends the following daily wellness practices:\n\n` +
+      `As discussed during your consultation, I recommend the following daily wellness practices:\n\n` +
       `${habitList}\n\n` +
       `Start with one small step today.${inviteSection}\n\n` +
       `Wishing you good health 🌿`
