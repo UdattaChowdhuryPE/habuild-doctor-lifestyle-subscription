@@ -1,13 +1,22 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { Button } from "./ui/button";
 import { MOCK_DOCTOR } from "@/lib/mockData";
-import { Leaf, Menu } from "lucide-react";
+import { getAuthUser, clearAuthUser } from "@/lib/auth";
+import { Leaf, Menu, LogOut } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export function AppNav() {
   const navigate = useNavigate();
   const routerState = useRouterState();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const authUser = getAuthUser();
+
+  const handleLogout = () => {
+    clearAuthUser();
+    toast.success("Logged out successfully");
+    navigate({ to: "/login" });
+  };
 
   const isActive = (path: string) => routerState.location.pathname === path;
 
@@ -47,10 +56,19 @@ export function AppNav() {
             ))}
           </nav>
 
-          {/* Profile */}
-          <div className="hidden sm:block text-right text-sm">
-            <p className="font-medium text-foreground">{MOCK_DOCTOR.full_name}</p>
-            <p className="text-xs text-muted-foreground">Doctor</p>
+          {/* Profile & Logout */}
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:block text-right text-sm">
+              <p className="font-medium text-foreground">{authUser?.fullName || MOCK_DOCTOR.full_name}</p>
+              <p className="text-xs text-muted-foreground">Doctor</p>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="p-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
+              title="Logout"
+            >
+              <LogOut className="h-5 w-5" />
+            </button>
           </div>
         </div>
       </div>

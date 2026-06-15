@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { AppLayout } from "@/components/AppLayout";
 import { MOCK_DOCTOR } from "@/lib/mockData";
+import { isAuthenticated } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Send, Users, FileText, BarChart3 } from "lucide-react";
@@ -8,7 +10,7 @@ import { Send, Users, FileText, BarChart3 } from "lucide-react";
 export const Route = createFileRoute("/dashboard")({ component: DashboardRoute });
 
 function DashboardContent() {
-  const navigate = useNavigate();
+  const navigate = useNavigate() as any;
 
   return (
     <AppLayout>
@@ -102,6 +104,18 @@ function DashboardContent() {
 }
 
 function DashboardRoute() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      navigate({ to: "/login" });
+    }
+  }, [navigate]);
+
+  if (!isAuthenticated()) {
+    return null;
+  }
+
   return <DashboardContent />;
 }
 

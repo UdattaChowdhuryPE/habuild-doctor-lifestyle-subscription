@@ -1,8 +1,8 @@
 export const MOCK_DOCTOR = {
   id: "mock-doctor-1",
-  full_name: "Dr. Priya Sharma",
+  full_name: "Dr. Udatta Chowdhury",
   phone: "9876543210",
-  referral_link: "https://habuild.in/priya-wellness-program",
+  referral_link: "https://habuild.in/udatta-wellness-program",
 };
 
 export const MOCK_PATIENTS = [

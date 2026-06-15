@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState, useMemo } from "react";
 import { AppLayout } from "@/components/AppLayout";
 import { MOCK_PATIENTS, MOCK_PRESCRIPTIONS } from "@/lib/mockData";
-import { useState, useMemo } from "react";
+import { isAuthenticated } from "@/lib/auth";
 import {
   Table,
   TableBody,
@@ -18,6 +19,26 @@ import { Textarea } from "@/components/ui/textarea";
 import { Eye, Plus } from "lucide-react";
 
 export const Route = createFileRoute("/patients")({ component: PatientsRoute });
+
+function PatientsRoute() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      navigate({ to: "/login" });
+    }
+  }, [navigate]);
+
+  if (!isAuthenticated()) {
+    return null;
+  }
+
+  return (
+    <AppLayout>
+      <PatientsContent />
+    </AppLayout>
+  );
+}
 
 function PatientsContent() {
   const navigate = useNavigate();
@@ -37,61 +58,59 @@ function PatientsContent() {
   }, [search]);
 
   return (
-    <AppLayout>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Patients</h1>
-          <p className="text-muted-foreground mt-2">View and manage your patient list</p>
-        </div>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold text-foreground">Patients</h1>
+        <p className="text-muted-foreground mt-2">View and manage your patient list</p>
+      </div>
 
-        <div className="flex gap-2">
-          <Input
-            placeholder="Search by name or mobile..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="max-w-xs"
-          />
-        </div>
+      <div className="flex gap-2">
+        <Input
+          placeholder="Search by name or mobile..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="max-w-xs"
+        />
+      </div>
 
-        <div className="rounded-lg border border-border overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Patient Name</TableHead>
-                <TableHead>Mobile</TableHead>
-                <TableHead>Prescriptions</TableHead>
-                <TableHead>Last Prescription</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+      <div className="rounded-lg border border-border overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Patient Name</TableHead>
+              <TableHead>Mobile</TableHead>
+              <TableHead>Prescriptions</TableHead>
+              <TableHead>Last Prescription</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredPatients.map((patient) => (
+              <TableRow key={patient.id}>
+                <TableCell className="font-medium">{patient.name}</TableCell>
+                <TableCell>{patient.mobile}</TableCell>
+                <TableCell>
+                  <Badge variant="secondary">{patient.prescriptionCount}</Badge>
+                </TableCell>
+                <TableCell className="text-sm text-muted-foreground">
+                  {patient.lastPrescriptionDate}
+                </TableCell>
+                <TableCell className="text-right space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectedPatientId(patient.id)}
+                  >
+                    <Eye className="h-4 w-4" />
+                  </Button>
+                  <Button size="sm" onClick={() => navigate({ to: "/send" })}>
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredPatients.map((patient) => (
-                <TableRow key={patient.id}>
-                  <TableCell className="font-medium">{patient.name}</TableCell>
-                  <TableCell>{patient.mobile}</TableCell>
-                  <TableCell>
-                    <Badge variant="secondary">{patient.prescriptionCount}</Badge>
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
-                    {patient.lastPrescriptionDate}
-                  </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setSelectedPatientId(patient.id)}
-                    >
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                    <Button size="sm" onClick={() => navigate({ to: "/send" })}>
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+            ))}
+          </TableBody>
+        </Table>
       </div>
 
       {/* Patient Detail Sheet */}
@@ -143,10 +162,8 @@ function PatientsContent() {
           )}
         </SheetContent>
       </Sheet>
-    </AppLayout>
+    </div>
   );
 }
 
-export default function PatientsRoute() {
-  return <PatientsContent />;
-}
+export default PatientsRoute;

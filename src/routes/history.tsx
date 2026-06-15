@@ -1,6 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { AppLayout } from "@/components/AppLayout";
 import { MOCK_PRESCRIPTIONS } from "@/lib/mockData";
+import { isAuthenticated } from "@/lib/auth";
 import { useState, useMemo } from "react";
 import {
   Table,
@@ -14,6 +16,26 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/history")({ component: HistoryRoute });
+
+function HistoryRoute() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      navigate({ to: "/login" });
+    }
+  }, [navigate]);
+
+  if (!isAuthenticated()) {
+    return null;
+  }
+
+  return (
+    <AppLayout>
+      <HistoryContent />
+    </AppLayout>
+  );
+}
 
 function HistoryContent() {
   const [search, setSearch] = useState("");
