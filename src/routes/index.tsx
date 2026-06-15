@@ -41,25 +41,4 @@ export const Route = createFileRoute("/")({
       },
     ],
   }),
-  component: Index,
 });
-
-function Index() {
-  const { user, isLoading } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isLoading) return;
-    if (!user) {
-      navigate({ to: "/login" });
-    } else {
-      navigate({ to: "/send" });
-    }
-  }, [user, isLoading, navigate]);
-
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <Loader2 className="h-8 w-8 animate-spin" />
-    </div>
-  );
-}
