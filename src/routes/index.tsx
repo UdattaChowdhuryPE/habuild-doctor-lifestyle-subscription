@@ -1,8 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { AppLayout } from "@/components/AppLayout";
 import { PrescriptionForm } from "@/components/PrescriptionForm";
 
 function IndexRoute() {
-  return <PrescriptionForm />;
+  return (
+    <AppLayout>
+      <PrescriptionForm />
+    </AppLayout>
+  );
 }
 
 export const Route = createFileRoute("/")({
