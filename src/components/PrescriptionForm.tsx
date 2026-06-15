@@ -1,8 +1,6 @@
-"use client";
-
 import { useState, useCallback, useMemo } from "react";
-import { useServerFn } from "@tanstack/react-start";
-import { savePrescription, getPrescriptionCount } from "@/lib/prescriptions.functions";
+import { useAuthProfile } from "@/hooks/useAuthProfile";
+import { MOCK_ANALYTICS } from "@/lib/mockData";
 import {
   User,
   Phone,
@@ -41,7 +39,7 @@ function generateWhatsAppMessage(
   patientName: string,
   habits: string[],
   doctorName: string,
-  inviteLink: string
+  inviteLink: string,
 ) {
   const habitList = habits.map((h) => `✅ ${h}`).join("\n");
   const inviteSection = inviteLink.trim()
@@ -52,7 +50,7 @@ function generateWhatsAppMessage(
       `As discussed during your consultation, I recommend the following daily wellness practices:\n\n` +
       `${habitList}\n\n` +
       `Start with one small step today.${inviteSection}\n\n` +
-      `Wishing you good health 🌿`
+      `Wishing you good health 🌿`,
   );
 }
 
@@ -65,20 +63,20 @@ function cleanMobileNumber(raw: string): string {
   return digits;
 }
 
-export function PrescriptionForm() {
+function PrescriptionFormContent() {
+  const { profile, isLoading: isProfileLoading } = useAuthProfile();
   const [patientName, setPatientName] = useState("");
   const [patientMobile, setPatientMobile] = useState("");
-  const [selectedHabits, setSelectedHabits] = useState<Set<string>>(
-    new Set(PRE_SELECTED)
-  );
+  const [selectedHabits, setSelectedHabits] = useState<Set<string>>(new Set(PRE_SELECTED));
   const [inviteLink, setInviteLink] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [showPreview, setShowPreview] = useState(true);
   const [showTracking, setShowTracking] = useState(false);
 
-  const saveFn = useServerFn(savePrescription);
-  const countFn = useServerFn(getPrescriptionCount);
-  const [sentCount, setSentCount] = useState<number | null>(null);
+  const [sentCount, setSentCount] = useState<number | null>(MOCK_ANALYTICS.totalSent);
+
+  const doctorName = profile?.full_name || "Doctor";
+  const doctorInviteLink = profile?.referral_link || "";
 
   const toggleHabit = useCallback((id: string) => {
     setSelectedHabits((prev) => {
@@ -97,15 +95,21 @@ export function PrescriptionForm() {
       Array.from(selectedHabits)
         .map((id) => DEFAULT_HABITS.find((h) => h.id === id)?.label)
         .filter(Boolean) as string[],
-    [selectedHabits]
+    [selectedHabits],
   );
 
   const waUrl = useMemo(() => {
     const cleaned = cleanMobileNumber(patientMobile);
     if (!cleaned || cleaned.length < 10) return null;
-    const message = generateWhatsAppMessage(patientName, selectedHabitLabels, "Dr. Udatta Chowdhury", inviteLink);
+    const finalInviteLink = inviteLink.trim() || doctorInviteLink;
+    const message = generateWhatsAppMessage(
+      patientName,
+      selectedHabitLabels,
+      doctorName,
+      finalInviteLink,
+    );
     return `https://wa.me/${cleaned}?text=${message}`;
-  }, [patientName, patientMobile, selectedHabitLabels, inviteLink]);
+  }, [patientName, patientMobile, selectedHabitLabels, inviteLink, doctorName, doctorInviteLink]);
 
   const handleSend = useCallback(async () => {
     if (!patientName.trim()) {
@@ -125,21 +129,16 @@ export function PrescriptionForm() {
       toast.error("Please enter a valid 10-digit mobile number");
       return;
     }
+    // End of validation
+    // Send is handled below in the try block
 
     setIsSending(true);
     try {
-      await saveFn({
-        data: {
-          patientName: patientName.trim(),
-          patientMobile: cleaned,
-          habits: selectedHabitLabels,
-          doctorName: "Dr. Udatta Chowdhury",
-          inviteLink: inviteLink.trim(),
-        },
-      });
+      // Mock send - simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const { count } = await countFn({});
-      setSentCount(count);
+      // Mock saving prescription
+      setSentCount(MOCK_ANALYTICS.totalSent + 1);
 
       if (waUrl) {
         window.open(waUrl, "_blank", "noopener,noreferrer");
@@ -158,13 +157,21 @@ export function PrescriptionForm() {
     } finally {
       setIsSending(false);
     }
-  }, [patientName, patientMobile, selectedHabits, selectedHabitLabels, waUrl, saveFn, countFn, inviteLink]);
+  }, [
+    patientName,
+    patientMobile,
+    selectedHabits,
+    selectedHabitLabels,
+    waUrl,
+    inviteLink,
+  ]);
 
   const previewMessage = useMemo(() => {
     const habitList = selectedHabitLabels.map((h) => `✅ ${h}`).join("\n");
-    const linkPlaceholder = inviteLink.trim() || "<doctors_personal_invite_link>";
-    const inviteSection = `\n\nTo help you get started, I would also like to invite you to a 14-Day Free Yoga Program, where Saurabh Bothra (IITian with 14+ years of experience) will guide you through simple daily sessions:\n\n${linkPlaceholder}`;
-    
+    const finalInviteLink =
+      inviteLink.trim() || doctorInviteLink || "<doctors_personal_invite_link>";
+    const inviteSection = `\n\nTo help you get started, I would also like to invite you to a 14-Day Free Yoga Program, where Saurabh Bothra (IITian with 14+ years of experience) will guide you through simple daily sessions:\n\n${finalInviteLink}`;
+
     return (
       `Namaste ${patientName || "Patient"} Ji 🙏\n\n` +
       `As discussed during your consultation, I recommend the following daily wellness practices:\n\n` +
@@ -172,7 +179,15 @@ export function PrescriptionForm() {
       `Start with one small step today.${inviteSection}\n\n` +
       `Wishing you good health 🌿`
     );
-  }, [patientName, selectedHabitLabels, inviteLink]);
+  }, [patientName, selectedHabitLabels, inviteLink, doctorInviteLink]);
+
+  if (isProfileLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[linear-gradient(180deg,var(--color-sage-light),var(--color-background))]">
@@ -226,9 +241,7 @@ export function PrescriptionForm() {
               placeholder="e.g. 9876543210"
               className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground outline-none ring-ring transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background placeholder:text-muted-foreground/60"
             />
-            <p className="text-xs text-muted-foreground">
-              Enter 10-digit Indian mobile number
-            </p>
+            <p className="text-xs text-muted-foreground">Enter 10-digit Indian mobile number</p>
           </div>
 
           {/* Invite Link */}
@@ -329,9 +342,6 @@ export function PrescriptionForm() {
         <button
           onClick={() => {
             setShowTracking((p) => !p);
-            if (!showTracking) {
-              countFn({}).then(({ count }) => setSentCount(count));
-            }
           }}
           className="mt-3 flex w-full items-center justify-between rounded-lg border border-border bg-card/50 px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-card"
         >
@@ -378,11 +388,13 @@ export function PrescriptionForm() {
       {/* Footer */}
       <footer className="border-t border-border mt-8">
         <div className="mx-auto max-w-lg px-4 py-4 text-center">
-          <p className="text-xs text-muted-foreground">
-            Built with 💚 by Team Habuild
-          </p>
+          <p className="text-xs text-muted-foreground">Built with 💚 by Team Habuild</p>
         </div>
       </footer>
     </div>
   );
+}
+
+export function PrescriptionForm() {
+  return <PrescriptionFormContent />;
 }

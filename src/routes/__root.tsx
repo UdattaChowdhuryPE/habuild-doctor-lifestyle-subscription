@@ -1,7 +1,4 @@
-import {
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
   Link,
@@ -10,10 +7,9 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
   return (
@@ -40,9 +36,6 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
-  useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
-  }, [error]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -81,17 +74,37 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Lifestyle Prescription | Habuild" },
-      { name: "description", content: "Send personalized lifestyle prescriptions to your patients on WhatsApp in under 15 seconds." },
+      {
+        name: "description",
+        content:
+          "Send personalized lifestyle prescriptions to your patients on WhatsApp in under 15 seconds.",
+      },
       { name: "author", content: "Habuild" },
       { property: "og:title", content: "Lifestyle Prescription | Habuild" },
-      { property: "og:description", content: "Send personalized lifestyle prescriptions to your patients on WhatsApp in under 15 seconds." },
+      {
+        property: "og:description",
+        content:
+          "Send personalized lifestyle prescriptions to your patients on WhatsApp in under 15 seconds.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Habuild" },
       { name: "twitter:title", content: "Lifestyle Prescription | Habuild" },
-      { name: "twitter:description", content: "Send personalized lifestyle prescriptions to your patients on WhatsApp in under 15 seconds." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/31495f07-2578-41b6-8ab5-3c0c818bea0a/id-preview-74abed3e--7169bdcc-8db5-4198-a562-8231efa7f145.lovable.app-1781167252978.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/31495f07-2578-41b6-8ab5-3c0c818bea0a/id-preview-74abed3e--7169bdcc-8db5-4198-a562-8231efa7f145.lovable.app-1781167252978.png" },
+      {
+        name: "twitter:description",
+        content:
+          "Send personalized lifestyle prescriptions to your patients on WhatsApp in under 15 seconds.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/31495f07-2578-41b6-8ab5-3c0c818bea0a/id-preview-74abed3e--7169bdcc-8db5-4198-a562-8231efa7f145.lovable.app-1781167252978.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/31495f07-2578-41b6-8ab5-3c0c818bea0a/id-preview-74abed3e--7169bdcc-8db5-4198-a562-8231efa7f145.lovable.app-1781167252978.png",
+      },
     ],
     links: [
       {
