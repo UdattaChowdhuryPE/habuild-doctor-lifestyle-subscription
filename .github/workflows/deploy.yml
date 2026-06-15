@@ -24,9 +24,14 @@ jobs:
           node-version: 18
       - run: npm install
       - run: npm run build
+      - name: Prepare deployment
+        run: |
+          # Copy client assets to deployment directory
+          mkdir -p deploy
+          cp -r dist/client/* deploy/
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: deploy
 
   deploy:
     needs: build
