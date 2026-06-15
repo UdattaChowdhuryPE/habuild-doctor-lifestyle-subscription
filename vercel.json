@@ -1,8 +1,5 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/client",
-  "routes": [
-    { "src": "/(.*)", "dest": "/$1" },
-    { "src": "/(.*)", "dest": "/index.html", "status": 200 }
-  ]
+  "framework": "tanstack-start",
+  "outputDirectory": "dist"
 }
