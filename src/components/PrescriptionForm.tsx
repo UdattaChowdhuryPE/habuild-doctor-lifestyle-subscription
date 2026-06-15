@@ -1,6 +1,5 @@
 import { useState, useCallback, useMemo } from "react";
-import { useAuthProfile } from "@/hooks/useAuthProfile";
-import { MOCK_ANALYTICS } from "@/lib/mockData";
+import { MOCK_DOCTOR, MOCK_ANALYTICS } from "@/lib/mockData";
 import {
   User,
   Phone,
@@ -64,7 +63,6 @@ function cleanMobileNumber(raw: string): string {
 }
 
 function PrescriptionFormContent() {
-  const { profile, isLoading: isProfileLoading } = useAuthProfile();
   const [patientName, setPatientName] = useState("");
   const [patientMobile, setPatientMobile] = useState("");
   const [selectedHabits, setSelectedHabits] = useState<Set<string>>(new Set(PRE_SELECTED));
@@ -75,8 +73,8 @@ function PrescriptionFormContent() {
 
   const [sentCount, setSentCount] = useState<number | null>(MOCK_ANALYTICS.totalSent);
 
-  const doctorName = profile?.full_name || "Doctor";
-  const doctorInviteLink = profile?.referral_link || "";
+  const doctorName = MOCK_DOCTOR.full_name;
+  const doctorInviteLink = MOCK_DOCTOR.referral_link;
 
   const toggleHabit = useCallback((id: string) => {
     setSelectedHabits((prev) => {
@@ -180,14 +178,6 @@ function PrescriptionFormContent() {
       `Wishing you good health 🌿`
     );
   }, [patientName, selectedHabitLabels, inviteLink, doctorInviteLink]);
-
-  if (isProfileLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-[linear-gradient(180deg,var(--color-sage-light),var(--color-background))]">

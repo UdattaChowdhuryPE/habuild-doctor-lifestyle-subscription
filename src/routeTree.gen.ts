@@ -11,9 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SendRouteImport } from './routes/send'
-import { Route as ProfileSetupRouteImport } from './routes/profile-setup'
 import { Route as PatientsRouteImport } from './routes/patients'
-import { Route as LoginRouteImport } from './routes/login'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
@@ -29,19 +27,9 @@ const SendRoute = SendRouteImport.update({
   path: '/send',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProfileSetupRoute = ProfileSetupRouteImport.update({
-  id: '/profile-setup',
-  path: '/profile-setup',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PatientsRoute = PatientsRouteImport.update({
   id: '/patients',
   path: '/patients',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HistoryRoute = HistoryRouteImport.update({
@@ -70,9 +58,7 @@ export interface FileRoutesByFullPath {
   '/analytics': typeof AnalyticsRoute
   '/dashboard': typeof DashboardRoute
   '/history': typeof HistoryRoute
-  '/login': typeof LoginRoute
   '/patients': typeof PatientsRoute
-  '/profile-setup': typeof ProfileSetupRoute
   '/send': typeof SendRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
@@ -81,9 +67,7 @@ export interface FileRoutesByTo {
   '/analytics': typeof AnalyticsRoute
   '/dashboard': typeof DashboardRoute
   '/history': typeof HistoryRoute
-  '/login': typeof LoginRoute
   '/patients': typeof PatientsRoute
-  '/profile-setup': typeof ProfileSetupRoute
   '/send': typeof SendRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
@@ -93,9 +77,7 @@ export interface FileRoutesById {
   '/analytics': typeof AnalyticsRoute
   '/dashboard': typeof DashboardRoute
   '/history': typeof HistoryRoute
-  '/login': typeof LoginRoute
   '/patients': typeof PatientsRoute
-  '/profile-setup': typeof ProfileSetupRoute
   '/send': typeof SendRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
@@ -106,9 +88,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/dashboard'
     | '/history'
-    | '/login'
     | '/patients'
-    | '/profile-setup'
     | '/send'
     | '/sitemap.xml'
   fileRoutesByTo: FileRoutesByTo
@@ -117,9 +97,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/dashboard'
     | '/history'
-    | '/login'
     | '/patients'
-    | '/profile-setup'
     | '/send'
     | '/sitemap.xml'
   id:
@@ -128,9 +106,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/dashboard'
     | '/history'
-    | '/login'
     | '/patients'
-    | '/profile-setup'
     | '/send'
     | '/sitemap.xml'
   fileRoutesById: FileRoutesById
@@ -140,9 +116,7 @@ export interface RootRouteChildren {
   AnalyticsRoute: typeof AnalyticsRoute
   DashboardRoute: typeof DashboardRoute
   HistoryRoute: typeof HistoryRoute
-  LoginRoute: typeof LoginRoute
   PatientsRoute: typeof PatientsRoute
-  ProfileSetupRoute: typeof ProfileSetupRoute
   SendRoute: typeof SendRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
@@ -163,25 +137,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SendRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/profile-setup': {
-      id: '/profile-setup'
-      path: '/profile-setup'
-      fullPath: '/profile-setup'
-      preLoaderRoute: typeof ProfileSetupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/patients': {
       id: '/patients'
       path: '/patients'
       fullPath: '/patients'
       preLoaderRoute: typeof PatientsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/history': {
@@ -220,9 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnalyticsRoute: AnalyticsRoute,
   DashboardRoute: DashboardRoute,
   HistoryRoute: HistoryRoute,
-  LoginRoute: LoginRoute,
   PatientsRoute: PatientsRoute,
-  ProfileSetupRoute: ProfileSetupRoute,
   SendRoute: SendRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
 }

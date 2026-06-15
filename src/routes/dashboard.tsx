@@ -1,24 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AppLayout } from "@/components/AppLayout";
-import { useAuthProfile } from "@/hooks/useAuthProfile";
+import { MOCK_DOCTOR } from "@/lib/mockData";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuth } from "@/hooks/useAuth";
-import { Loader2, Send, Users, FileText, BarChart3 } from "lucide-react";
+import { Send, Users, FileText, BarChart3 } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard")({ component: DashboardRoute });
 
 function DashboardContent() {
-  const { isLoading } = useAuthProfile();
   const navigate = useNavigate();
-
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
 
   return (
     <AppLayout>
@@ -111,6 +101,8 @@ function DashboardContent() {
   );
 }
 
-export default function DashboardRoute() {
+function DashboardRoute() {
   return <DashboardContent />;
 }
+
+
