@@ -1,22 +1,9 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { AppLayout } from "@/components/AppLayout";
 import { PrescriptionForm } from "@/components/PrescriptionForm";
 import { isAuthenticated } from "@/lib/auth";
 
 function IndexRoute() {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isAuthenticated()) {
-      navigate({ to: "/login" });
-    }
-  }, [navigate]);
-
-  if (!isAuthenticated()) {
-    return null;
-  }
-
   return (
     <AppLayout>
       <PrescriptionForm />
@@ -25,6 +12,11 @@ function IndexRoute() {
 }
 
 export const Route = createFileRoute("/")({
+  beforeLoad: () => {
+    if (!isAuthenticated()) {
+      throw redirect({ to: "/login" });
+    }
+  },
   head: () => ({
     meta: [
       { title: "Lifestyle Prescription | Habuild" },

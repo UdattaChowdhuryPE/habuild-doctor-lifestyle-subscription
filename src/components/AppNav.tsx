@@ -59,7 +59,9 @@ export function AppNav() {
           {/* Profile & Logout */}
           <div className="flex items-center gap-4">
             <div className="hidden sm:block text-right text-sm">
-              <p className="font-medium text-foreground">{authUser?.fullName || MOCK_DOCTOR.full_name}</p>
+              <p className="font-medium text-foreground">
+                {authUser?.fullName || MOCK_DOCTOR.full_name}
+              </p>
               <p className="text-xs text-muted-foreground">Doctor</p>
             </div>
             <button

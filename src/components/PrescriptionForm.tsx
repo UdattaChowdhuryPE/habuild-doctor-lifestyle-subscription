@@ -32,7 +32,7 @@ const DEFAULT_HABITS = [
   { id: "screen", label: "Avoid screen before bed", icon: Smartphone },
 ];
 
-const PRE_SELECTED: string[] = [];
+const PRE_SELECTED: string[] = ["yoga", "walking"];
 
 function generateWhatsAppMessage(
   patientName: string,
@@ -155,14 +155,7 @@ function PrescriptionFormContent() {
     } finally {
       setIsSending(false);
     }
-  }, [
-    patientName,
-    patientMobile,
-    selectedHabits,
-    selectedHabitLabels,
-    waUrl,
-    inviteLink,
-  ]);
+  }, [patientName, patientMobile, selectedHabits, selectedHabitLabels, waUrl, inviteLink]);
 
   const previewMessage = useMemo(() => {
     const habitList = selectedHabitLabels.map((h) => `✅ ${h}`).join("\n");

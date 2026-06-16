@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { setAuthUser } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,13 @@ function LoginPage() {
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"phone" | "otp">("phone");
   const [isLoading, setIsLoading] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   const normalizePhone = (input: string) => {
     const digits = input.replace(/\D/g, "");
@@ -32,10 +39,11 @@ function LoginPage() {
 
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading) return;
     setIsLoading(true);
 
-    // Simulate sending OTP
-    setTimeout(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
       const normalizedPhone = normalizePhone(phone);
       if (normalizedPhone.length !== 12) {
         toast.error("Please enter a valid 10-digit phone number");
@@ -49,12 +57,13 @@ function LoginPage() {
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading) return;
     setIsLoading(true);
 
-    // Simulate OTP verification and save to localStorage
-    setTimeout(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
       const normalizedPhone = normalizePhone(phone);
-      setAuthUser({ phone: normalizedPhone });
+      setAuthUser({ phone: normalizedPhone, fullName: "" });
       toast.success("Logged in successfully");
       navigate({ to: "/profile-setup" });
       setIsLoading(false);
@@ -62,8 +71,8 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-50 to-emerald-50 px-4">
-      <Card className="w-full max-w-md">
+    <div className="relative isolate flex min-h-screen items-center justify-center bg-gradient-to-br from-green-50 to-emerald-50 px-4">
+      <Card className="relative z-10 w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-2">
             <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-1 rounded-full">
@@ -94,7 +103,7 @@ function LoginPage() {
                 <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
                 <p>This is a demo. Enter any 10-digit number to proceed.</p>
               </div>
-              <Button type="submit" className="w-full" disabled={isLoading || !phone}>
+              <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Send OTP
               </Button>
@@ -121,7 +130,7 @@ function LoginPage() {
                 <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
                 <p>This is a demo. Any 6 digits will work.</p>
               </div>
-              <Button type="submit" className="w-full" disabled={isLoading || otp.length !== 6}>
+              <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Verify OTP
               </Button>

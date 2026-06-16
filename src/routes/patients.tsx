@@ -1,5 +1,5 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState, useMemo } from "react";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { useState, useMemo } from "react";
 import { AppLayout } from "@/components/AppLayout";
 import { MOCK_PATIENTS, MOCK_PRESCRIPTIONS } from "@/lib/mockData";
 import { isAuthenticated } from "@/lib/auth";
@@ -18,21 +18,16 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Eye, Plus } from "lucide-react";
 
-export const Route = createFileRoute("/patients")({ component: PatientsRoute });
+export const Route = createFileRoute("/patients")({
+  beforeLoad: () => {
+    if (!isAuthenticated()) {
+      throw redirect({ to: "/login" });
+    }
+  },
+  component: PatientsRoute,
+});
 
 function PatientsRoute() {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isAuthenticated()) {
-      navigate({ to: "/login" });
-    }
-  }, [navigate]);
-
-  if (!isAuthenticated()) {
-    return null;
-  }
-
   return (
     <AppLayout>
       <PatientsContent />

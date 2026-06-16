@@ -4,10 +4,11 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useNavigate,
   HeadContent,
-  Scripts,
 } from "@tanstack/react-router";
-import { type ReactNode } from "react";
+import { useEffect } from "react";
+import { Toaster } from "sonner";
 
 function NotFoundComponent() {
   return (
@@ -34,6 +35,14 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
+  const navigate = useNavigate();
+
+  // Redirect to login for auth errors
+  useEffect(() => {
+    if (error.message === "Not authenticated") {
+      navigate({ to: "/login", replace: true });
+    }
+  }, [error, navigate]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -120,32 +129,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
     ],
   }),
-  shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
-
-function RootShell({ children }: { children: ReactNode }) {
-  return (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  );
-}
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
+      <HeadContent />
       <Outlet />
+      <Toaster />
     </QueryClientProvider>
   );
 }

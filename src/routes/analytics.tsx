@@ -1,5 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { isAuthenticated } from "@/lib/auth";
 import { AppLayout } from "@/components/AppLayout";
 import { MOCK_ANALYTICS } from "@/lib/mockData";
@@ -18,21 +17,16 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, Users, Calendar } from "lucide-react";
 
-export const Route = createFileRoute("/analytics")({ component: AnalyticsRoute });
+export const Route = createFileRoute("/analytics")({
+  beforeLoad: () => {
+    if (!isAuthenticated()) {
+      throw redirect({ to: "/login" });
+    }
+  },
+  component: AnalyticsRoute,
+});
 
 function AnalyticsRoute() {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isAuthenticated()) {
-      navigate({ to: "/login" });
-    }
-  }, [navigate]);
-
-  if (!isAuthenticated()) {
-    return null;
-  }
-
   return (
     <AppLayout>
       <AnalyticsContent />

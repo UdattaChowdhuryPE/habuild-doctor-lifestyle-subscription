@@ -1,13 +1,18 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { getAuthUser, setAuthUser } from "@/lib/auth";
+import { getAuthUser, setAuthUser, isAuthenticated } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/profile-setup")({
+  beforeLoad: () => {
+    if (!isAuthenticated()) {
+      throw redirect({ to: "/login" });
+    }
+  },
   component: ProfileSetupPage,
 });
 
@@ -18,11 +23,6 @@ function ProfileSetupPage() {
   const [referralLink, setReferralLink] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  if (!authUser) {
-    navigate({ to: "/login" });
-    return null;
-  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,11 +41,14 @@ function ProfileSetupPage() {
 
       // Update auth user with full name and referral link
       setAuthUser({
+        phone: authUser?.phone ?? "",
         ...authUser,
         fullName: fullName.trim(),
         referralLink: referralLink.trim() || undefined,
       });
 
+      // Force a small delay to ensure localStorage is updated
+      await new Promise((resolve) => setTimeout(resolve, 100));
       toast.success("Profile saved successfully!");
       navigate({ to: "/dashboard" });
     } catch (err) {
@@ -61,7 +64,9 @@ function ProfileSetupPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Complete Your Profile</CardTitle>
-          <CardDescription>Set up your doctor profile to start sending prescriptions</CardDescription>
+          <CardDescription>
+            Set up your doctor profile to start sending prescriptions
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -99,11 +104,7 @@ function ProfileSetupPage() {
 
             {error && <p className="text-sm text-red-600">{error}</p>}
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading || !fullName.trim()}
-            >
+            <Button type="submit" className="w-full" disabled={isLoading || !fullName.trim()}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Save Profile
             </Button>
