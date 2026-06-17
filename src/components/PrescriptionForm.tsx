@@ -5,7 +5,6 @@ import {
   Phone,
   Send,
   Check,
-  Leaf,
   Heart,
   Activity,
   Moon,
@@ -24,10 +23,10 @@ import { Toaster, toast } from "sonner";
 const DEFAULT_HABITS = [
   { id: "yoga", label: "10 minutes Yoga", icon: Activity },
   { id: "walking", label: "15 minutes Walking", icon: Heart },
-  { id: "breathing", label: "5 minutes Deep Breathing", icon: Leaf },
+  { id: "breathing", label: "5 minutes Deep Breathing", icon: Droplets },
   { id: "sleep", label: "Sleep before 11 PM", icon: Moon },
   { id: "water", label: "Drink 2 litres water", icon: Droplets },
-  { id: "meditation", label: "10 minutes Meditation", icon: Leaf },
+  { id: "meditation", label: "10 minutes Meditation", icon: Activity },
   { id: "fruits", label: "Eat fruits daily", icon: Apple },
   { id: "screen", label: "Avoid screen before bed", icon: Smartphone },
 ];
@@ -213,14 +212,14 @@ function PrescriptionFormContent({ standalone = true }: PrescriptionFormProps) {
   const formContent = (
     <>
       {!hasSeenOnboarding && (
-        <div className="mb-4 flex items-center gap-3 rounded-lg bg-green-50 border border-green-200 px-3 py-3 text-sm text-green-900">
+        <div className="mb-4 flex items-center gap-3 rounded-lg bg-primary/10 border border-primary/20 px-3 py-3 text-sm text-primary">
           <div className="flex-1">
             <p className="font-medium">How it works:</p>
             <p className="text-xs mt-0.5 opacity-85">Fill patient details → Pick habits → Tap Send → WhatsApp opens</p>
           </div>
           <button
             onClick={dismissOnboarding}
-            className="shrink-0 h-6 w-6 flex items-center justify-center text-green-600 hover:text-green-700 hover:bg-green-100 rounded"
+            className="shrink-0 h-6 w-6 flex items-center justify-center text-primary hover:opacity-70 hover:bg-primary/10 rounded"
             type="button"
           >
             ×
@@ -300,7 +299,7 @@ function PrescriptionFormContent({ standalone = true }: PrescriptionFormProps) {
           {/* Habits */}
           <div className="space-y-2">
             <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-              <Heart className="h-4 w-4 text-habuild" />
+              <Heart className="h-4 w-4 text-primary" />
               Recommended Habits
             </label>
             <p className="text-xs text-muted-foreground -mt-1">Tap to add or remove habits from the prescription.</p>
@@ -319,7 +318,7 @@ function PrescriptionFormContent({ standalone = true }: PrescriptionFormProps) {
                     <span className={`habit-check ${isSelected ? "habit-check-active" : ""}`}>
                       <Check className="h-3.5 w-3.5" strokeWidth={3} />
                     </span>
-                    <Icon className="h-4 w-4 text-habuild shrink-0" />
+                    <Icon className="h-4 w-4 text-primary shrink-0" />
                     <span className="leading-tight">{habit.label}</span>
                   </button>
                 );
@@ -370,7 +369,7 @@ function PrescriptionFormContent({ standalone = true }: PrescriptionFormProps) {
               className="hidden sm:flex mt-4 w-full items-center justify-between rounded-lg border border-border bg-card/50 px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-card"
             >
               <span className="flex items-center gap-2">
-                <MessageCircle className="h-4 w-4 text-habuild" />
+                <MessageCircle className="h-4 w-4 text-primary" />
                 Preview WhatsApp Message
               </span>
               {showPreview ? (
@@ -394,7 +393,7 @@ function PrescriptionFormContent({ standalone = true }: PrescriptionFormProps) {
               className="hidden sm:flex mt-3 w-full items-center justify-between rounded-lg border border-border bg-card/50 px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-card"
             >
               <span className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-habuild" />
+                <TrendingUp className="h-4 w-4 text-primary" />
                 Prescription Tracking
               </span>
               {showTracking ? (
@@ -445,9 +444,7 @@ function PrescriptionFormContent({ standalone = true }: PrescriptionFormProps) {
       <header className="border-b border-border bg-card/60 backdrop-blur-sm">
         <div className="mx-auto max-w-lg px-4 py-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[image:var(--gradient-habuild)] shadow-sm">
-              <Leaf className="h-5 w-5 text-primary-foreground" />
-            </div>
+            <img src="/habuild-logo.png" alt="Habuild" className="h-9 w-9 rounded-lg object-cover shadow-sm" />
             <div>
               <h1 className="text-lg font-semibold leading-tight text-foreground font-[family-name:var(--font-display)]">
                 Lifestyle Prescription
@@ -492,7 +489,7 @@ function PrescriptionFormContent({ standalone = true }: PrescriptionFormProps) {
               className="mt-4 flex w-full items-center justify-between rounded-lg border border-border bg-card/50 px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-card"
             >
               <span className="flex items-center gap-2">
-                <MessageCircle className="h-4 w-4 text-habuild" />
+                <MessageCircle className="h-4 w-4 text-primary" />
                 Preview WhatsApp Message
               </span>
               {showPreview ? (
@@ -516,7 +513,7 @@ function PrescriptionFormContent({ standalone = true }: PrescriptionFormProps) {
               className="mt-3 flex w-full items-center justify-between rounded-lg border border-border bg-card/50 px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-card"
             >
               <span className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-habuild" />
+                <TrendingUp className="h-4 w-4 text-primary" />
                 Prescription Tracking
               </span>
               {showTracking ? (

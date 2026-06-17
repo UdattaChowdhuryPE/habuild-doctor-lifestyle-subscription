@@ -2,7 +2,7 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { Button } from "./ui/button";
 import { MOCK_DOCTOR } from "@/lib/mockData";
 import { getAuthUser, clearAuthUser } from "@/lib/auth";
-import { Leaf, Menu, LogOut, Send, FileText } from "lucide-react";
+import { Menu, LogOut, Send, FileText } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -31,9 +31,7 @@ export function AppNav() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/send" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-green-600">
-              <Leaf className="h-5 w-5 text-white" />
-            </div>
+            <img src="/habuild-logo.png" alt="Habuild" className="h-9 w-9 rounded-lg object-cover" />
             <div>
               <span className="font-semibold text-foreground block text-sm sm:text-base">Habuild</span>
               <span className="text-xs text-muted-foreground">{authUser?.fullName || MOCK_DOCTOR.full_name}</span>
@@ -48,7 +46,7 @@ export function AppNav() {
                 to={item.href}
                 className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${
                   isActive(item.href)
-                    ? "bg-green-100 text-green-700"
+                    ? "bg-primary/10 text-primary"
                     : "text-muted-foreground hover:text-foreground hover:bg-accent"
                 }`}
               >
@@ -87,7 +85,7 @@ export function AppNav() {
                 to={item.href}
                 className={`flex flex-col items-center justify-center flex-1 h-full gap-1 transition-colors ${
                   isActive(item.href)
-                    ? "text-green-600 font-medium"
+                    ? "text-primary font-medium"
                     : "text-muted-foreground"
                 }`}
               >

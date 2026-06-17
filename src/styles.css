@@ -52,39 +52,39 @@
 :root {
   --radius: 0.75rem;
 
-  /* Habuild Brand Palette — light, airy mint with teal→green gradient */
-  --habuild: oklch(0.68 0.13 175); /* brand teal */
-  --habuild-light: oklch(0.78 0.13 165);
-  --habuild-dark: oklch(0.58 0.13 178);
-  --habuild-green: oklch(0.72 0.15 150); /* brand green */
-  --gradient-habuild: linear-gradient(100deg, oklch(0.68 0.13 178), oklch(0.74 0.16 150));
-  --amber: oklch(0.76 0.15 70); /* brand orange accent */
-  --amber-light: oklch(0.85 0.12 75);
-  --sage: oklch(0.82 0.07 175);
-  --sage-light: oklch(0.94 0.03 175);
-  --cream: oklch(0.98 0.01 175);
-  --forest: oklch(0.3 0.04 250); /* navy headings */
+  /* Habuild Brand Palette — from brand guidelines */
+  --habuild: #3FA68E; /* teal green primary */
+  --habuild-light: #5bb8a0;
+  --habuild-dark: #2d8a7a;
+  --habuild-green: #3FA68E; /* teal green */
+  --gradient-habuild: linear-gradient(100deg, #3FA68E, #2d8a7a);
+  --amber: #E87F57; /* soft coral orange CTA */
+  --amber-light: #f0956e;
+  --sage: #f0f5f3;
+  --sage-light: #f8faf9;
+  --cream: #fafcfb;
+  --forest: #003E50; /* dark navy teal headings */
 
   /* Shadcn semantic tokens mapped to Habuild */
-  --background: oklch(0.98 0.015 175);
-  --foreground: oklch(0.27 0.04 255);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.27 0.04 255);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.27 0.04 255);
-  --primary: oklch(0.68 0.13 175);
-  --primary-foreground: oklch(0.99 0.01 175);
-  --secondary: oklch(0.94 0.04 175);
-  --secondary-foreground: oklch(0.4 0.08 178);
-  --muted: oklch(0.95 0.02 175);
-  --muted-foreground: oklch(0.52 0.03 250);
-  --accent: oklch(0.92 0.05 175);
-  --accent-foreground: oklch(0.4 0.08 178);
-  --destructive: oklch(0.58 0.22 25);
-  --destructive-foreground: oklch(0.99 0.01 175);
-  --border: oklch(0.92 0.02 175);
-  --input: oklch(0.9 0.02 175);
-  --ring: oklch(0.68 0.13 175);
+  --background: #fafcfb;
+  --foreground: #003E50;
+  --card: #ffffff;
+  --card-foreground: #003E50;
+  --popover: #ffffff;
+  --popover-foreground: #003E50;
+  --primary: #3FA68E;
+  --primary-foreground: #ffffff;
+  --secondary: #2A74B8;
+  --secondary-foreground: #ffffff;
+  --muted: #f0f5f3;
+  --muted-foreground: #6b8a85;
+  --accent: #E87F57;
+  --accent-foreground: #ffffff;
+  --destructive: #d84e4e;
+  --destructive-foreground: #ffffff;
+  --border: #e0e8e5;
+  --input: #f0f5f3;
+  --ring: #3FA68E;
 
   --chart-1: oklch(0.45 0.12 155);
   --chart-2: oklch(0.65 0.16 65);
@@ -102,25 +102,25 @@
 }
 
 .dark {
-  --background: oklch(0.18 0.03 260);
-  --foreground: oklch(0.95 0.02 155);
-  --card: oklch(0.22 0.04 260);
-  --card-foreground: oklch(0.95 0.02 155);
-  --popover: oklch(0.22 0.04 260);
-  --popover-foreground: oklch(0.95 0.02 155);
-  --primary: oklch(0.62 0.14 155);
-  --primary-foreground: oklch(0.15 0.03 260);
-  --secondary: oklch(0.3 0.06 155);
-  --secondary-foreground: oklch(0.95 0.02 155);
-  --muted: oklch(0.3 0.06 155);
-  --muted-foreground: oklch(0.65 0.05 260);
-  --accent: oklch(0.3 0.06 155);
-  --accent-foreground: oklch(0.95 0.02 155);
-  --destructive: oklch(0.62 0.22 25);
-  --destructive-foreground: oklch(0.95 0.02 155);
-  --border: oklch(0.3 0.04 260);
-  --input: oklch(0.3 0.04 260);
-  --ring: oklch(0.62 0.14 155);
+  --background: #0f1f24;
+  --foreground: #f0f5f3;
+  --card: #1a2d33;
+  --card-foreground: #f0f5f3;
+  --popover: #1a2d33;
+  --popover-foreground: #f0f5f3;
+  --primary: #5bb8a0;
+  --primary-foreground: #003E50;
+  --secondary: #5b9fe5;
+  --secondary-foreground: #003E50;
+  --muted: #2d3f45;
+  --muted-foreground: #a0b0ad;
+  --accent: #f0956e;
+  --accent-foreground: #003E50;
+  --destructive: #ff6b6b;
+  --destructive-foreground: #ffffff;
+  --border: #2d3f45;
+  --input: #2d3f45;
+  --ring: #5bb8a0;
 
   --chart-1: oklch(0.62 0.14 155);
   --chart-2: oklch(0.65 0.16 65);
@@ -165,12 +165,12 @@
   font-weight: 600;
   padding: 0.85rem 1.5rem;
   transition: all 0.2s ease;
-  box-shadow: 0 6px 18px oklch(from var(--color-habuild) l c h / 30%);
+  box-shadow: 0 6px 18px rgba(63, 166, 142, 0.3);
 
   &:hover {
-    filter: brightness(1.05);
-    transform: translateY(-1px);
-    box-shadow: 0 10px 26px oklch(from var(--color-habuild) l c h / 38%);
+    filter: brightness(1.08);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(63, 166, 142, 0.4);
   }
 }
 
