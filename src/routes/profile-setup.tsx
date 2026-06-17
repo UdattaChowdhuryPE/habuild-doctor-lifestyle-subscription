@@ -50,7 +50,7 @@ function ProfileSetupPage() {
       // Force a small delay to ensure localStorage is updated
       await new Promise((resolve) => setTimeout(resolve, 100));
       toast.success("Profile saved successfully!");
-      navigate({ to: "/dashboard" });
+      navigate({ to: "/send" });
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
       toast.error("Failed to save profile");

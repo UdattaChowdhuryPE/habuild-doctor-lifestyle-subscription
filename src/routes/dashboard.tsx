@@ -11,6 +11,7 @@ export const Route = createFileRoute("/dashboard")({
     if (!isAuthenticated()) {
       throw redirect({ to: "/login" });
     }
+    throw redirect({ to: "/send" });
   },
   component: DashboardRoute,
 });

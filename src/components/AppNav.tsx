@@ -21,11 +21,8 @@ export function AppNav() {
   const isActive = (path: string) => routerState.location.pathname === path;
 
   const navItems = [
-    { label: "Dashboard", href: "/dashboard" },
     { label: "Send", href: "/send" },
-    { label: "Patients", href: "/patients" },
     { label: "History", href: "/history" },
-    { label: "Analytics", href: "/analytics" },
   ];
 
   return (
@@ -33,7 +30,7 @@ export function AppNav() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/dashboard" className="flex items-center gap-2">
+          <Link to="/send" className="flex items-center gap-2">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-green-600">
               <Leaf className="h-5 w-5 text-white" />
             </div>
