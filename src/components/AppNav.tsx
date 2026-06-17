@@ -34,7 +34,10 @@ export function AppNav() {
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-green-600">
               <Leaf className="h-5 w-5 text-white" />
             </div>
-            <span className="font-semibold text-foreground hidden sm:inline">Habuild</span>
+            <div>
+              <span className="font-semibold text-foreground block text-sm sm:text-base">Habuild</span>
+              <span className="text-xs text-muted-foreground">{authUser?.fullName || MOCK_DOCTOR.full_name}</span>
+            </div>
           </Link>
 
           {/* Desktop Nav */}
