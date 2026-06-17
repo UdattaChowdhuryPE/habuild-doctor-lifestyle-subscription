@@ -75,7 +75,7 @@ export function AppNav() {
         </div>
 
         {/* Mobile Bottom Tab Bar */}
-        <nav className="md:hidden border-t border-border bg-white flex items-center justify-around fixed bottom-0 left-0 right-0 h-16 pb-[env(safe-area-inset-bottom)]">
+        <nav className="md:hidden border-t border-border bg-white flex items-center justify-around fixed bottom-0 left-0 right-0 h-16 pb-[env(safe-area-inset-bottom)] z-50">
           {navItems.map((item) => {
             const Icon = item.label === "Send" ? Send : FileText;
             return (

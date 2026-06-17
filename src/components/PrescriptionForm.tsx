@@ -341,7 +341,7 @@ function PrescriptionFormContent({ standalone = true }: PrescriptionFormProps) {
             <button
               onClick={handleSend}
               disabled={isSending}
-              className="btn-habuild flex w-full items-center justify-center gap-2 disabled:opacity-60 sticky bottom-4 left-0 right-0 mx-auto"
+              className="btn-habuild flex w-full items-center justify-center gap-2 disabled:opacity-60 sticky bottom-16 md:bottom-4 left-0 right-0 mx-auto z-30"
             >
               {isSending ? (
                 <>
