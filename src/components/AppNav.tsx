@@ -25,6 +25,7 @@ export function AppNav() {
     { label: "Send", href: "/send" },
     { label: "Patients", href: "/patients" },
     { label: "History", href: "/history" },
+    { label: "Analytics", href: "/analytics" },
   ];
 
   return (
@@ -56,6 +57,15 @@ export function AppNav() {
             ))}
           </nav>
 
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden p-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
+            title="Menu"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+
           {/* Profile & Logout */}
           <div className="flex items-center gap-4">
             <div className="hidden sm:block text-right text-sm">
@@ -73,6 +83,26 @@ export function AppNav() {
             </button>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <nav className="md:hidden border-t border-border bg-card">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                to={item.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`block px-4 py-3 text-sm font-medium transition-colors border-b border-border/50 last:border-b-0 ${
+                  isActive(item.href)
+                    ? "bg-green-100 text-green-700"
+                    : "text-foreground hover:bg-accent"
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        )}
       </div>
     </header>
   );

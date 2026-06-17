@@ -62,14 +62,25 @@ function cleanMobileNumber(raw: string): string {
   return digits;
 }
 
-function PrescriptionFormContent() {
+interface PrescriptionFormProps {
+  standalone?: boolean;
+}
+
+function PrescriptionFormContent({ standalone = true }: PrescriptionFormProps) {
   const [patientName, setPatientName] = useState("");
   const [patientMobile, setPatientMobile] = useState("");
   const [selectedHabits, setSelectedHabits] = useState<Set<string>>(new Set(PRE_SELECTED));
   const [inviteLink, setInviteLink] = useState("");
   const [isSending, setIsSending] = useState(false);
-  const [showPreview, setShowPreview] = useState(true);
+  const [showPreview, setShowPreview] = useState(!window.innerWidth || window.innerWidth < 640);
   const [showTracking, setShowTracking] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [successPatientName, setSuccessPatientName] = useState("");
+  const [successHabitCount, setSuccessHabitCount] = useState(0);
+  const [hasSeenOnboarding, setHasSeenOnboarding] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return localStorage.getItem("habuild_onboarding_seen") === "1";
+  });
 
   const [sentCount, setSentCount] = useState<number | null>(MOCK_ANALYTICS.totalSent);
 
@@ -142,13 +153,18 @@ function PrescriptionFormContent() {
         window.open(waUrl, "_blank", "noopener,noreferrer");
       }
 
-      toast.success("Prescription sent and tracked!");
+      // Mark onboarding as seen
+      localStorage.setItem("habuild_onboarding_seen", "1");
 
-      // Reset form
-      setPatientName("");
-      setPatientMobile("");
-      setSelectedHabits(new Set(PRE_SELECTED));
-      setInviteLink("");
+      // Show success state
+      setSuccessPatientName(patientName);
+      setSuccessHabitCount(selectedHabits.size);
+      setShowSuccess(true);
+
+      // Auto-reset after 3 seconds
+      setTimeout(() => {
+        resetForm();
+      }, 3000);
     } catch (err) {
       toast.error("Something went wrong. Please try again.");
       console.error(err);
@@ -156,6 +172,28 @@ function PrescriptionFormContent() {
       setIsSending(false);
     }
   }, [patientName, patientMobile, selectedHabits, selectedHabitLabels, waUrl, inviteLink]);
+
+  const resetForm = useCallback(() => {
+    setPatientName("");
+    setPatientMobile("");
+    setSelectedHabits(new Set(PRE_SELECTED));
+    setInviteLink("");
+    setShowSuccess(false);
+  }, []);
+
+  const handleSendAnother = useCallback(() => {
+    resetForm();
+  }, [resetForm]);
+
+  const handleViewHistory = useCallback(() => {
+    // This will be handled by wrapping in a router context
+    window.location.href = "/history";
+  }, []);
+
+  const dismissOnboarding = useCallback(() => {
+    localStorage.setItem("habuild_onboarding_seen", "1");
+    setHasSeenOnboarding(true);
+  }, []);
 
   const previewMessage = useMemo(() => {
     const habitList = selectedHabitLabels.map((h) => `✅ ${h}`).join("\n");
@@ -171,6 +209,229 @@ function PrescriptionFormContent() {
       `Wishing you good health 🌿`
     );
   }, [patientName, selectedHabitLabels, inviteLink, doctorInviteLink]);
+
+  const formContent = (
+    <>
+      {!hasSeenOnboarding && (
+        <div className="mb-4 flex items-center gap-3 rounded-lg bg-green-50 border border-green-200 px-3 py-3 text-sm text-green-900">
+          <div className="flex-1">
+            <p className="font-medium">How it works:</p>
+            <p className="text-xs mt-0.5 opacity-85">Fill patient details → Pick habits → Tap Send → WhatsApp opens</p>
+          </div>
+          <button
+            onClick={dismissOnboarding}
+            className="shrink-0 h-6 w-6 flex items-center justify-center text-green-600 hover:text-green-700 hover:bg-green-100 rounded"
+            type="button"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
+      {showSuccess ? (
+        <div className="text-center py-8">
+          <div className="text-6xl mb-4">✅</div>
+          <h2 className="text-xl font-bold text-foreground mb-1">Sent to {successPatientName}</h2>
+          <p className="text-sm text-muted-foreground mb-6">{successHabitCount} habits prescribed</p>
+          <div className="space-y-3">
+            <button
+              onClick={handleSendAnother}
+              className="btn-habuild w-full"
+            >
+              Send Another
+            </button>
+            <button
+              onClick={handleViewHistory}
+              className="w-full px-4 py-2.5 rounded-lg border border-input bg-background hover:bg-accent transition-colors text-foreground font-medium"
+            >
+              View History
+            </button>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Patient Name */}
+          <div className="space-y-1.5">
+            <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+              <User className="h-4 w-4 text-habuild" />
+              Patient Name
+            </label>
+            <input
+              type="text"
+              value={patientName}
+              onChange={(e) => setPatientName(e.target.value)}
+              placeholder="e.g. Rishi"
+              className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-base text-foreground outline-none ring-ring transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background placeholder:text-muted-foreground/60 min-h-[44px]"
+            />
+          </div>
+
+          {/* Mobile Number */}
+          <div className="space-y-1.5">
+            <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+              <Phone className="h-4 w-4 text-habuild" />
+              Mobile Number
+            </label>
+            <input
+              type="tel"
+              value={patientMobile}
+              onChange={(e) => setPatientMobile(e.target.value)}
+              placeholder="e.g. 9876543210"
+              className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-base text-foreground outline-none ring-ring transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background placeholder:text-muted-foreground/60 min-h-[44px]"
+            />
+            <p className="text-xs text-muted-foreground">Enter 10-digit Indian mobile number</p>
+          </div>
+
+          {/* Invite Link */}
+          <div className="space-y-1.5">
+            <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+              <ExternalLink className="h-4 w-4 text-habuild" />
+              14-Day Yoga Program Link
+            </label>
+            <input
+              type="url"
+              value={inviteLink}
+              onChange={(e) => setInviteLink(e.target.value)}
+              placeholder="e.g. https://habuild.in/yoga-program"
+              className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-base text-foreground outline-none ring-ring transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background placeholder:text-muted-foreground/60 min-h-[44px]"
+            />
+            <p className="text-xs text-muted-foreground">Your personal invite link for the free yoga program</p>
+          </div>
+
+          {/* Habits */}
+          <div className="space-y-2">
+            <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+              <Heart className="h-4 w-4 text-habuild" />
+              Recommended Habits
+            </label>
+            <p className="text-xs text-muted-foreground -mt-1">Tap to add or remove habits from the prescription.</p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {DEFAULT_HABITS.map((habit) => {
+                const isSelected = selectedHabits.has(habit.id);
+                const Icon = habit.icon;
+                return (
+                  <button
+                    key={habit.id}
+                    type="button"
+                    aria-pressed={isSelected}
+                    onClick={() => toggleHabit(habit.id)}
+                    className={`habit-row min-h-[44px] ${isSelected ? "habit-row-active" : ""}`}
+                  >
+                    <span className={`habit-check ${isSelected ? "habit-check-active" : ""}`}>
+                      <Check className="h-3.5 w-3.5" strokeWidth={3} />
+                    </span>
+                    <Icon className="h-4 w-4 text-habuild shrink-0" />
+                    <span className="leading-tight">{habit.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </>
+      )}
+    </>
+  );
+
+  if (!standalone) {
+    return (
+      <div className="mx-auto max-w-lg px-4 py-6">
+        <div className="card-elevated p-5 space-y-5">
+          {formContent}
+
+          {!showSuccess && (
+            <button
+              onClick={handleSend}
+              disabled={isSending}
+              className="btn-habuild flex w-full items-center justify-center gap-2 disabled:opacity-60 sticky bottom-4 left-0 right-0 mx-auto"
+            >
+              {isSending ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <Send className="h-4 w-4" />
+                  Send Prescription
+                </>
+              )}
+            </button>
+          )}
+        </div>
+
+        {!showSuccess && (
+          <>
+            {/* Preview Toggle - hidden on small screens */}
+            <button
+              onClick={() => setShowPreview((p) => !p)}
+              className="hidden sm:flex mt-4 w-full items-center justify-between rounded-lg border border-border bg-card/50 px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-card"
+            >
+              <span className="flex items-center gap-2">
+                <MessageCircle className="h-4 w-4 text-habuild" />
+                Preview WhatsApp Message
+              </span>
+              {showPreview ? (
+                <ChevronUp className="h-4 w-4 text-muted-foreground" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              )}
+            </button>
+
+            {showPreview && (
+              <div className="mt-2 rounded-xl border border-border bg-card p-4">
+                <div className="rounded-lg bg-[#dcf8c6] p-3 text-sm text-[#1f2421] whitespace-pre-line">
+                  {previewMessage}
+                </div>
+              </div>
+            )}
+
+            {/* Tracking Toggle - hidden on small screens */}
+            <button
+              onClick={() => setShowTracking((p) => !p)}
+              className="hidden sm:flex mt-3 w-full items-center justify-between rounded-lg border border-border bg-card/50 px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-card"
+            >
+              <span className="flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-habuild" />
+                Prescription Tracking
+              </span>
+              {showTracking ? (
+                <ChevronUp className="h-4 w-4 text-muted-foreground" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              )}
+            </button>
+
+            {showTracking && (
+              <div className="mt-2 rounded-xl border border-border bg-card p-4">
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="rounded-lg bg-sage-light p-3 text-center">
+                    <div className="text-2xl font-bold text-forest font-[family-name:var(--font-display)]">
+                      {sentCount ?? "-"}
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1">Sent</div>
+                  </div>
+                  <div className="rounded-lg bg-sage-light/60 p-3 text-center opacity-50">
+                    <div className="text-2xl font-bold text-forest font-[family-name:var(--font-display)]">
+                      —
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1">Delivered</div>
+                  </div>
+                  <div className="rounded-lg bg-sage-light/60 p-3 text-center opacity-50">
+                    <div className="text-2xl font-bold text-forest font-[family-name:var(--font-display)]">
+                      —
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1">Read</div>
+                  </div>
+                </div>
+                <p className="mt-3 text-xs text-muted-foreground text-center">
+                  Delivery and read tracking require WhatsApp Business API integration.
+                </p>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[linear-gradient(180deg,var(--color-sage-light),var(--color-background))]">
@@ -196,175 +457,99 @@ function PrescriptionFormContent() {
       {/* Main Form */}
       <main className="mx-auto max-w-lg px-4 py-6">
         <div className="card-elevated p-5 space-y-5">
-          {/* Patient Name */}
-          <div className="space-y-1.5">
-            <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-              <User className="h-4 w-4 text-habuild" />
-              Patient Name
-            </label>
-            <input
-              type="text"
-              value={patientName}
-              onChange={(e) => setPatientName(e.target.value)}
-              placeholder="e.g. Rishi"
-              className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground outline-none ring-ring transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background placeholder:text-muted-foreground/60"
-            />
-          </div>
+          {formContent}
 
-          {/* Mobile Number */}
-          <div className="space-y-1.5">
-            <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-              <Phone className="h-4 w-4 text-habuild" />
-              Mobile Number
-            </label>
-            <input
-              type="tel"
-              value={patientMobile}
-              onChange={(e) => setPatientMobile(e.target.value)}
-              placeholder="e.g. 9876543210"
-              className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground outline-none ring-ring transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background placeholder:text-muted-foreground/60"
-            />
-            <p className="text-xs text-muted-foreground">Enter 10-digit Indian mobile number</p>
-          </div>
-
-          {/* Invite Link */}
-          <div className="space-y-1.5">
-            <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-              <ExternalLink className="h-4 w-4 text-habuild" />
-              14-Day Yoga Program Link
-            </label>
-            <input
-              type="url"
-              value={inviteLink}
-              onChange={(e) => setInviteLink(e.target.value)}
-              placeholder="e.g. https://habuild.in/yoga-program"
-              className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground outline-none ring-ring transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background placeholder:text-muted-foreground/60"
-            />
-            <p className="text-xs text-muted-foreground">
-              Your personal invite link for the free yoga program
-            </p>
-          </div>
-
-          {/* Habits */}
-          <div className="space-y-2">
-            <label className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-              <Heart className="h-4 w-4 text-habuild" />
-              Recommended Habits
-            </label>
-            <p className="text-xs text-muted-foreground -mt-1">
-              Tap to add or remove habits from the prescription.
-            </p>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {DEFAULT_HABITS.map((habit) => {
-                const isSelected = selectedHabits.has(habit.id);
-                const Icon = habit.icon;
-                return (
-                  <button
-                    key={habit.id}
-                    type="button"
-                    aria-pressed={isSelected}
-                    onClick={() => toggleHabit(habit.id)}
-                    className={`habit-row ${isSelected ? "habit-row-active" : ""}`}
-                  >
-                    <span className={`habit-check ${isSelected ? "habit-check-active" : ""}`}>
-                      <Check className="h-3.5 w-3.5" strokeWidth={3} />
-                    </span>
-                    <Icon className="h-4 w-4 text-habuild shrink-0" />
-                    <span className="leading-tight">{habit.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Send Button */}
-          <button
-            onClick={handleSend}
-            disabled={isSending}
-            className="btn-habuild flex w-full items-center justify-center gap-2 disabled:opacity-60"
-          >
-            {isSending ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Sending...
-              </>
-            ) : (
-              <>
-                <Send className="h-4 w-4" />
-                Send Prescription
-              </>
-            )}
-          </button>
+          {!showSuccess && (
+            <button
+              onClick={handleSend}
+              disabled={isSending}
+              className="btn-habuild flex w-full items-center justify-center gap-2 disabled:opacity-60 sm:sticky sm:bottom-4"
+            >
+              {isSending ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <Send className="h-4 w-4" />
+                  Send Prescription
+                </>
+              )}
+            </button>
+          )}
         </div>
 
-        {/* Preview Toggle */}
-        <button
-          onClick={() => setShowPreview((p) => !p)}
-          className="mt-4 flex w-full items-center justify-between rounded-lg border border-border bg-card/50 px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-card"
-        >
-          <span className="flex items-center gap-2">
-            <MessageCircle className="h-4 w-4 text-habuild" />
-            Preview WhatsApp Message
-          </span>
-          {showPreview ? (
-            <ChevronUp className="h-4 w-4 text-muted-foreground" />
-          ) : (
-            <ChevronDown className="h-4 w-4 text-muted-foreground" />
-          )}
-        </button>
+        {!showSuccess && (
+          <>
+            {/* Preview Toggle */}
+            <button
+              onClick={() => setShowPreview((p) => !p)}
+              className="mt-4 flex w-full items-center justify-between rounded-lg border border-border bg-card/50 px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-card"
+            >
+              <span className="flex items-center gap-2">
+                <MessageCircle className="h-4 w-4 text-habuild" />
+                Preview WhatsApp Message
+              </span>
+              {showPreview ? (
+                <ChevronUp className="h-4 w-4 text-muted-foreground" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              )}
+            </button>
 
-        {showPreview && (
-          <div className="mt-2 rounded-xl border border-border bg-card p-4">
-            <div className="rounded-lg bg-[#dcf8c6] p-3 text-sm text-[#1f2421] whitespace-pre-line">
-              {previewMessage}
-            </div>
-          </div>
-        )}
+            {showPreview && (
+              <div className="mt-2 rounded-xl border border-border bg-card p-4">
+                <div className="rounded-lg bg-[#dcf8c6] p-3 text-sm text-[#1f2421] whitespace-pre-line">
+                  {previewMessage}
+                </div>
+              </div>
+            )}
 
-        {/* Tracking Toggle */}
-        <button
-          onClick={() => {
-            setShowTracking((p) => !p);
-          }}
-          className="mt-3 flex w-full items-center justify-between rounded-lg border border-border bg-card/50 px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-card"
-        >
-          <span className="flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-habuild" />
-            Prescription Tracking
-          </span>
-          {showTracking ? (
-            <ChevronUp className="h-4 w-4 text-muted-foreground" />
-          ) : (
-            <ChevronDown className="h-4 w-4 text-muted-foreground" />
-          )}
-        </button>
+            {/* Tracking Toggle */}
+            <button
+              onClick={() => setShowTracking((p) => !p)}
+              className="mt-3 flex w-full items-center justify-between rounded-lg border border-border bg-card/50 px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-card"
+            >
+              <span className="flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-habuild" />
+                Prescription Tracking
+              </span>
+              {showTracking ? (
+                <ChevronUp className="h-4 w-4 text-muted-foreground" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              )}
+            </button>
 
-        {showTracking && (
-          <div className="mt-2 rounded-xl border border-border bg-card p-4">
-            <div className="grid grid-cols-3 gap-3">
-              <div className="rounded-lg bg-sage-light p-3 text-center">
-                <div className="text-2xl font-bold text-forest font-[family-name:var(--font-display)]">
-                  {sentCount ?? "-"}
+            {showTracking && (
+              <div className="mt-2 rounded-xl border border-border bg-card p-4">
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="rounded-lg bg-sage-light p-3 text-center">
+                    <div className="text-2xl font-bold text-forest font-[family-name:var(--font-display)]">
+                      {sentCount ?? "-"}
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1">Sent</div>
+                  </div>
+                  <div className="rounded-lg bg-sage-light/60 p-3 text-center opacity-50">
+                    <div className="text-2xl font-bold text-forest font-[family-name:var(--font-display)]">
+                      —
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1">Delivered</div>
+                  </div>
+                  <div className="rounded-lg bg-sage-light/60 p-3 text-center opacity-50">
+                    <div className="text-2xl font-bold text-forest font-[family-name:var(--font-display)]">
+                      —
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1">Read</div>
+                  </div>
                 </div>
-                <div className="text-xs text-muted-foreground mt-1">Sent</div>
+                <p className="mt-3 text-xs text-muted-foreground text-center">
+                  Delivery and read tracking require WhatsApp Business API integration.
+                </p>
               </div>
-              <div className="rounded-lg bg-sage-light/60 p-3 text-center opacity-50">
-                <div className="text-2xl font-bold text-forest font-[family-name:var(--font-display)]">
-                  —
-                </div>
-                <div className="text-xs text-muted-foreground mt-1">Delivered</div>
-              </div>
-              <div className="rounded-lg bg-sage-light/60 p-3 text-center opacity-50">
-                <div className="text-2xl font-bold text-forest font-[family-name:var(--font-display)]">
-                  —
-                </div>
-                <div className="text-xs text-muted-foreground mt-1">Read</div>
-              </div>
-            </div>
-            <p className="mt-3 text-xs text-muted-foreground text-center">
-              Delivery and read tracking require WhatsApp Business API integration.
-            </p>
-          </div>
+            )}
+          </>
         )}
       </main>
 
@@ -378,6 +563,6 @@ function PrescriptionFormContent() {
   );
 }
 
-export function PrescriptionForm() {
-  return <PrescriptionFormContent />;
+export function PrescriptionForm({ standalone = true }: PrescriptionFormProps = {}) {
+  return <PrescriptionFormContent standalone={standalone} />;
 }

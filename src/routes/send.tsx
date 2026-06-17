@@ -6,7 +6,7 @@ import { isAuthenticated } from "@/lib/auth";
 function SendRoute() {
   return (
     <AppLayout>
-      <PrescriptionForm />
+      <PrescriptionForm standalone={false} />
     </AppLayout>
   );
 }
