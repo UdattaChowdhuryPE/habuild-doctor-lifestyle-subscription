@@ -2,7 +2,7 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { Button } from "./ui/button";
 import { MOCK_DOCTOR } from "@/lib/mockData";
 import { getAuthUser, clearAuthUser } from "@/lib/auth";
-import { Leaf, Menu, LogOut } from "lucide-react";
+import { Leaf, Menu, LogOut, Send, FileText } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -54,14 +54,7 @@ export function AppNav() {
             ))}
           </nav>
 
-          {/* Mobile Menu Toggle */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
-            title="Menu"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
+
 
           {/* Profile & Logout */}
           <div className="flex items-center gap-4">
@@ -81,25 +74,26 @@ export function AppNav() {
           </div>
         </div>
 
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <nav className="md:hidden border-t border-border bg-card">
-            {navItems.map((item) => (
+        {/* Mobile Bottom Tab Bar */}
+        <nav className="md:hidden border-t border-border bg-white flex items-center justify-around fixed bottom-0 left-0 right-0 h-16 pb-[env(safe-area-inset-bottom)]">
+          {navItems.map((item) => {
+            const Icon = item.label === "Send" ? Send : FileText;
+            return (
               <Link
                 key={item.href}
                 to={item.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`block px-4 py-3 text-sm font-medium transition-colors border-b border-border/50 last:border-b-0 ${
+                className={`flex flex-col items-center justify-center flex-1 h-full gap-1 transition-colors ${
                   isActive(item.href)
-                    ? "bg-green-100 text-green-700"
-                    : "text-foreground hover:bg-accent"
+                    ? "text-green-600 font-medium"
+                    : "text-muted-foreground"
                 }`}
               >
-                {item.label}
+                <Icon className="h-6 w-6" />
+                <span className="text-xs font-medium">{item.label}</span>
               </Link>
-            ))}
-          </nav>
-        )}
+            );
+          })}
+        </nav>
       </div>
     </header>
   );
